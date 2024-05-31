@@ -55,7 +55,7 @@ export const handleFieldValidation = (formData: any) => {
   return errors;
 };
 
-export const verifyToken = (
+export const verifyToken = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -68,7 +68,7 @@ export const verifyToken = (
 
   try {
     const decoded = jwt.verify(token, SECRET);
-    res.status(201).json({ data: [], msg: "valid token" });
+    // res.status(201).json({ data: [], msg: "valid token" });
     let q = { ...req, user: decoded };
     q.user = decoded;
     next();

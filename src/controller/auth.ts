@@ -90,3 +90,17 @@ export const loginController = async (
     }
   }
 };
+
+export const logoutController = async (req: Request, res: Response) => {
+  const token = req.header("Authorization")?.split(" ")[1];
+
+  if (!token) {
+    return res.status(400).json({ message: "Token required for logout" });
+  }
+  try {
+    res.json({ data: [], msg: "Logged out successfully" });
+  } catch (err) {
+    console.error("Error logging out:", err);
+    res.status(500).json({ data: [], msg: "error logging out" });
+  }
+};
