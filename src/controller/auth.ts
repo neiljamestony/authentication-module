@@ -15,7 +15,7 @@ export const registerController = async (
   const { email, fname, lname, password, phoneNumber, userType } = req.body;
   const fieldValidation = handleFieldValidation(req.body);
   if (!fieldValidation.length) {
-    const isUserExists = await findOneUser(email);
+    const isUserExists = await findOneUser({ email });
     if (isUserExists === null) {
       const hashedPassword = await generateHash(password);
       const user = await insertOne({
@@ -47,7 +47,6 @@ export const registerController = async (
     } else {
       res.status(201).json({ data: [], msg: "email exists" });
     }
-    next();
   } else {
     res.status(422).json({ data: [], msg: fieldValidation });
   }
