@@ -4,8 +4,13 @@ import jwt, {
   JsonWebTokenError,
   TokenExpiredError,
   NotBeforeError,
+  JwtPayload,
 } from "jsonwebtoken";
 import { SECRET } from "../config/uri";
+
+export interface IPayload extends JwtPayload {
+  id: any;
+}
 
 const isTokenExpiredError = (error: any): error is TokenExpiredError => {
   return error instanceof TokenExpiredError;
@@ -60,17 +65,16 @@ export const verifyToken = async (
   res: Response,
   next: NextFunction
 ) => {
-  const token: any =
-    req.headers.authorization && req.headers.authorization.split(" ")[1];
-
-  if (!token)
-    res.status(422).json({ data: [], msg: "Access denied, no token provided" });
-
   try {
-    const decoded = jwt.verify(token, SECRET);
-    // res.status(201).json({ data: [], msg: "valid token" });
-    let q = { ...req, user: decoded };
-    q.user = decoded;
+    const token: any =
+      req.headers.authorization && req.headers.authorization.split(" ")[1];
+
+    if (!token)
+      res
+        .status(422)
+        .json({ data: [], msg: "Access denied, no token provided" });
+    const decoded = jwt.verify(token, SECRET) as JwtPayload;
+    res.locals.user = decoded;
     next();
   } catch (error) {
     if (isTokenExpiredError(error)) {
@@ -79,6 +83,7 @@ export const verifyToken = async (
     if (error instanceof JsonWebTokenError || error instanceof NotBeforeError) {
       return res.status(401).json({ data: [], msg: "Invalid Token" });
     }
+
     res.json({ data: [], msg: "Internal Server Error" });
   }
 };
