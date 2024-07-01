@@ -44,12 +44,15 @@ export const registerController = async (
             msg: "success",
           });
         } else {
-          res.status(201).json({ data: [], msg: "Unexpected Error occured!" });
+          res.status(201).json({
+            data: [],
+            msg: "Unexpected Error occured, please try again!",
+          });
         }
       } else {
         res
           .status(201)
-          .json({ data: [], msg: "its either email or phone number exists!" });
+          .json({ data: [], msg: "Its either email or phone number exists!" });
       }
     } else {
       res.status(422).json({ data: [], msg: fieldValidation });
@@ -90,7 +93,7 @@ export const loginController = async (
         msg: "success",
       });
     } else {
-      res.status(422).json({ data: [], msg: "invalid credentials!" });
+      res.status(422).json({ data: [], msg: "Invalid credentials!" });
     }
     next();
   } catch (error) {
